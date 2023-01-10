@@ -15,20 +15,20 @@ using namespace std;
 typedef pair <int, int> Pair;
 typedef tuple <double, int, int> Tuple;
 
+//Проверка на нахождение ячейки внутри поля
+bool is_valid(const vector<vector<int>>& grid, const Pair& point, int col, int row) {
+    if (row > 0 && col > 0)
+        return (point.first >= 0) && (point.first < row) && (point.second >= 0) && (point.second < col);
+    return false;
+}
+
 //Структура для хранения данных о ячейке
 struct cell {
     Pair parent;
     double f, g, h;
     cell() : parent(-1, -1), f(-1), g(-1), h(-1) {}
+    //double f() { return g + h; }
 };
-
-//Проверка ячейки на нахождении ее внутри массива
-template <size_t ROW, size_t COLUMN>
-bool is_valid(const array<array<int, COLUMN>, ROW>& grid, const Pair& point) {
-    if (ROW > 0 && COLUMN > 0)
-        return (point.first >= 0) && (point.first < ROW) && (point.second >= 0) && (point.second < COLUMN);
-    return false;
-}
 
 //Проверка на достижение цели
 bool check_win(const Pair& current, const Pair& end) {
@@ -37,13 +37,15 @@ bool check_win(const Pair& current, const Pair& end) {
 
 //Расчет эвристики h
 int heuristic(const Pair& current, const Pair& end) {
-    return sqrt((current.first - end.first) * (current.first - end.first) + (current.second - end.second) * (current.second - end.second));
+    return sqrt(
+        (current.first - end.first) * (current.first - end.first) +
+        (current.second - end.second) * (current.second - end.second));
 }
 
-template <size_t ROW, size_t COLUMN>
-void draw(const array<array<int, COLUMN>, ROW>& grid, vector<Pair>path, const Pair& end) {
-    for (int i = 0; i < ROW; ++i) {
-        for (int j = 0; j < COLUMN; ++j) {
+//Отрисовка посещенных ячеек
+void draw(const vector<vector<int>>& grid, vector<Pair>path, const Pair& end, int row, int col) {
+    for (int i = 0; i < row; ++i) {
+        for (int j = 0; j < col; ++j) {
 
             cout << setiosflags(ios::left);
 
@@ -67,27 +69,26 @@ void draw(const array<array<int, COLUMN>, ROW>& grid, vector<Pair>path, const Pa
     }
 }
 
-//Отрисовка пути
-template <size_t ROW, size_t COLUMN>
-void path_making(const array<array<cell, COLUMN>, ROW>& cell_details, const array<array<int, COLUMN>, ROW>& grid, const Pair& end, const Pair& start) {
+//Отрисовка конечного пути
+void path_making(vector<vector<cell>>& cell_details, const vector<vector<int>>& grid, const Pair& start, const Pair& end, int col, int row) {
     stack<Pair> path;
     vector<Pair>path_pair;
     int g = 0;
-    int row = end.first;
-    int col = end.second;
-    Pair next_node = cell_details[row][col].parent;
+    int rows = end.first;
+    int cols = end.second;
+    Pair next_node = cell_details[rows][cols].parent;
     ofstream fout("output.txt");
 
     do {
         path.push(next_node);
         path_pair.push_back(next_node);
-        next_node = cell_details[row][col].parent;
-        row = next_node.first;
-        col = next_node.second;
-    } while (cell_details[row][col].parent != next_node);
+        next_node = cell_details[rows][cols].parent;
+        rows = next_node.first;
+        cols = next_node.second;
+    } while (cell_details[rows][cols].parent != next_node);
 
-    for (int i = 0; i < ROW; ++i) {
-        for (int j = 0; j < COLUMN; ++j) {
+    for (int i = 0; i < row; ++i) {
+        for (int j = 0; j < col; ++j) {
 
             cout << setiosflags(ios::left);
 
@@ -116,7 +117,7 @@ void path_making(const array<array<cell, COLUMN>, ROW>& cell_details, const arra
 
     cout << "Path found";
 
-    path.emplace(row, col);
+    path.emplace(rows, cols);
     while (path.size() != 1) {
         Pair p = path.top();
         path.pop();
@@ -130,18 +131,17 @@ void path_making(const array<array<cell, COLUMN>, ROW>& cell_details, const arra
     fout.close();
 }
 
-template <size_t ROW, size_t COLUMN>
-void a_star(const array<array<int, COLUMN>, ROW>& grid, const Pair& current, const Pair& end) {
+void a_star(const vector<vector<int>>& grid, const Pair& current, const Pair& end, int col, int row) {
     ofstream fout("output.txt");
     //Если начало не в диапазоне поля
-    if (!is_valid(grid, current)) {
+    if (!is_valid(grid, current, col, row)) {
         cout << "Incorrect data";
         fout << "0";
         return;
     }
 
     //Если конец не в диапазоне поля
-    if (!is_valid(grid, end)) {
+    if (!is_valid(grid, end, col, row)) {
         cout << "Incorrect data";
         fout << "0";
         return;
@@ -156,10 +156,17 @@ void a_star(const array<array<int, COLUMN>, ROW>& grid, const Pair& current, con
 
     fout.close();
 
-    bool closed_list[ROW][COLUMN];
-    memset(closed_list, false, sizeof(closed_list));
+    vector< vector <bool> > closed_list(row);
+    for (int i = 0; i < row; ++i) {
+        closed_list[i].resize(col);
+        for (int j = 0; j < col; ++j)
+            closed_list[i][j] = false;
+    }
+    vector< vector <cell> > cell_details(row);
+    for (int i = 0; i < row; ++i) {
+        cell_details[i].resize(col);
+    }
 
-    array<array<cell, COLUMN>, ROW> cell_details;
     vector<Pair>path;
     Pair path_pair;
     Pair start = current;
@@ -171,7 +178,6 @@ void a_star(const array<array<int, COLUMN>, ROW>& grid, const Pair& current, con
     cell_details[i][j].parent = { i, j };
 
     priority_queue<Tuple, vector<Tuple>, greater<Tuple>> open_list;
-
     //Помещаем начальную ячейку в список open_list
     open_list.emplace(0, i, j);
 
@@ -182,18 +188,18 @@ void a_star(const array<array<int, COLUMN>, ROW>& grid, const Pair& current, con
         open_list.pop();
         closed_list[i][j] = true;
 
-        draw(grid, path, end);
-        Sleep(100);
+        draw(grid, path, end, row, col);
+        Sleep(200);
         system("cls");
 
         for (int x = -1; x <= 1; ++x) {
             for (int y = -1; y <= 1; ++y) {
                 Pair neighbour(i + x, j + y);
 
-                if (is_valid(grid, neighbour)) {
+                if (is_valid(grid, neighbour, col, row)) {
                     if (check_win(neighbour, end)) {
                         cell_details[neighbour.first][neighbour.second].parent = { i, j };
-                        path_making(cell_details, grid, end, start);
+                        path_making(cell_details, grid, start, end, col, row);
                         return;
                     }
                     else if (!closed_list[neighbour.first][neighbour.second] || cell_details[i][j].g + grid[neighbour.first][neighbour.second] < cell_details[neighbour.first][neighbour.second].g) {
@@ -219,259 +225,25 @@ void a_star(const array<array<int, COLUMN>, ROW>& grid, const Pair& current, con
     }
 }
 
-int test(ifstream& fin, ifstream& fout, ifstream& res) {
-    const int COLUMN = 10, ROW = 9;
-    int start_x, start_y, end_x, end_y;
-    string g, g_new;
+int main() {
+    ifstream fin("input.txt");
+    ofstream fout("output.txt");
+    unsigned long int row, col, start_x, start_y, end_x, end_y, q;
+    fin >> row >> col >> start_x >> start_y >> end_x >> end_y;
 
-    //Вводим координаты стартовой позиции и конечной точки
-    fin >> start_y >> start_x >> end_y >> end_x;
+    Pair start(start_x, start_y);
+    Pair end(end_x, end_y);
 
-    //Создаем пару стартовой и конечной точки
-    Pair start(start_y, start_x);
-    Pair end(end_y, end_x);
+    vector< vector <int> > grid(row);
 
-    //Создаем поле размером 9 столбцов на 10 строк
-    array<array<int, COLUMN>, ROW> grid;
-
-    for (int i = 0; i < ROW; ++i) {
-        for (int j = 0; j < COLUMN; ++j) {
-            fin >> grid[i][j];
+    for (int i = 0; i < row; ++i) {
+        grid[i].resize(col);
+        for (int j = 0; j < col; ++j) {
+            fin >> q;
+            grid[i][j] = q;
         }
     }
-
-    a_star(grid, start, end);
-    cin.get();
-    system("cls");
-
-    fout >> g_new;
-    res >> g;
-
-    if (g == g_new)
-        return 1;
-    else
-        return 0;
+    a_star(grid, start, end, col, row);
 
 }
 
-void tests() {
-    int result = 0;
-    {
-        ifstream fin("tests\\1\\input.txt");
-        ifstream fout("output.txt");
-        ifstream res("tests\\1\\result.txt");
-        result += test(fin, fout, res);
-        fin.close();
-        fout.close();
-        res.close();
-    }
-    {
-        ifstream fin("tests\\2\\input.txt");
-        ifstream fout("output.txt");
-        ifstream res("tests\\2\\result.txt");
-        result += test(fin, fout, res);
-        fin.close();
-        fout.close();
-        res.close();
-    }
-    {
-        ifstream fin("tests\\3\\input.txt");
-        ifstream fout("output.txt");
-        ifstream res("tests\\3\\result.txt");
-        result += test(fin, fout, res);
-        fin.close();
-        fout.close();
-        res.close();
-    }
-    {
-        ifstream fin("tests\\4\\input.txt");
-        ifstream fout("output.txt");
-        ifstream res("tests\\4\\result.txt");
-        result += test(fin, fout, res);
-        fin.close();
-        fout.close();
-        res.close();
-    }
-    {
-        ifstream fin("tests\\5\\input.txt");
-        ifstream fout("output.txt");
-        ifstream res("tests\\5\\result.txt");
-        result += test(fin, fout, res);
-        fin.close();
-        fout.close();
-        res.close();
-    }
-    {
-        ifstream fin("tests\\6\\input.txt");
-        ifstream fout("output.txt");
-        ifstream res("tests\\6\\result.txt");
-        result += test(fin, fout, res);
-        fin.close();
-        fout.close();
-        res.close();
-    }
-    {
-        ifstream fin("tests\\7\\input.txt");
-        ifstream fout("output.txt");
-        ifstream res("tests\\7\\result.txt");
-        result += test(fin, fout, res);
-        fin.close();
-        fout.close();
-        res.close();
-    }
-    {
-        ifstream fin("tests\\8\\input.txt");
-        ifstream fout("output.txt");
-        ifstream res("tests\\8\\result.txt");
-        result += test(fin, fout, res);
-        fin.close();
-        fout.close();
-        res.close();
-    }
-    {
-        ifstream fin("tests\\9\\input.txt");
-        ifstream fout("output.txt");
-        ifstream res("tests\\9\\result.txt");
-        result += test(fin, fout, res);
-        fin.close();
-        fout.close();
-        res.close();
-    }
-    {
-        ifstream fin("tests\\10\\input.txt");
-        ifstream fout("output.txt");
-        ifstream res("tests\\10\\result.txt");
-        result += test(fin, fout, res);
-        fin.close();
-        fout.close();
-        res.close();
-    }
-    {
-        ifstream fin("tests\\11\\input.txt");
-        ifstream fout("output.txt");
-        ifstream res("tests\\11\\result.txt");
-        result += test(fin, fout, res);
-        fin.close();
-        fout.close();
-        res.close();
-    }
-    {
-        ifstream fin("tests\\12\\input.txt");
-        ifstream fout("output.txt");
-        ifstream res("tests\\12\\result.txt");
-        result += test(fin, fout, res);
-        fin.close();
-        fout.close();
-        res.close();
-    }
-    {
-        ifstream fin("tests\\13\\input.txt");
-        ifstream fout("output.txt");
-        ifstream res("tests\\13\\result.txt");
-        result += test(fin, fout, res);
-        fin.close();
-        fout.close();
-        res.close();
-    }
-    {
-        ifstream fin("tests\\14\\input.txt");
-        ifstream fout("output.txt");
-        ifstream res("tests\\14\\result.txt");
-        result += test(fin, fout, res);
-        fin.close();
-        fout.close();
-        res.close();
-    }
-    {
-        ifstream fin("tests\\15\\input.txt");
-        ifstream fout("output.txt");
-        ifstream res("tests\\15\\result.txt");
-        result += test(fin, fout, res);
-        fin.close();
-        fout.close();
-        res.close();
-    }
-    {
-        ifstream fin("tests\\16\\input.txt");
-        ifstream fout("output.txt");
-        ifstream res("tests\\16\\result.txt");
-        result += test(fin, fout, res);
-        fin.close();
-        fout.close();
-        res.close();
-    }
-    {
-        ifstream fin("tests\\17\\input.txt");
-        ifstream fout("output.txt");
-        ifstream res("tests\\17\\result.txt");
-        result += test(fin, fout, res);
-        fin.close();
-        fout.close();
-        res.close();
-    }
-    {
-        ifstream fin("tests\\18\\input.txt");
-        ifstream fout("output.txt");
-        ifstream res("tests\\18\\result.txt");
-        result += test(fin, fout, res);
-        fin.close();
-        fout.close();
-        res.close();
-    }
-    {
-        ifstream fin("tests\\19\\input.txt");
-        ifstream fout("output.txt");
-        ifstream res("tests\\19\\result.txt");
-        result += test(fin, fout, res);
-        fin.close();
-        fout.close();
-        res.close();
-    }
-    {
-        ifstream fin("tests\\20\\input.txt");
-        ifstream fout("output.txt");
-        ifstream res("tests\\20\\result.txt");
-        result += test(fin, fout, res);
-        fin.close();
-        fout.close();
-        res.close();
-    }
-    {
-        ifstream fin("tests\\21\\input.txt");
-        ifstream fout("output.txt");
-        ifstream res("tests\\21\\result.txt");
-        result += test(fin, fout, res);
-        fin.close();
-        fout.close();
-        res.close();
-    }
-    {
-        ifstream fin("tests\\22\\input.txt");
-        ifstream fout("output.txt");
-        ifstream res("tests\\22\\result.txt");
-        result += test(fin, fout, res);
-        fin.close();
-        fout.close();
-        res.close();
-    }
-    {
-        ifstream fin("tests\\23\\input.txt");
-        ifstream fout("output.txt");
-        ifstream res("tests\\23\\result.txt");
-        result += test(fin, fout, res);
-        fin.close();
-        fout.close();
-        res.close();
-    }
-    
-    if (result == 23)
-        cout << "OK";
-    else
-        cout << "WA";
-}
-
-
-int main()
-{
-    tests();
-}
