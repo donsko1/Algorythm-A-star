@@ -128,9 +128,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Algorythm A star.cpp" />
+    <ClCompile Include="a_star.cpp" />
+    <ClCompile Include="checks.cpp" />
+    <ClCompile Include="draw.cpp" />
+    <ClCompile Include="heuristic.cpp" />
+    <ClCompile Include="path_making.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="input.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="a_star.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
