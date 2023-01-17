@@ -61,3 +61,34 @@ void path_making(vector<vector<cell>>& cell_details, const vector<vector<int>>& 
 
     fout.close();
 }
+
+void path_making_n(vector<vector<cell>>& cell_details, const vector<vector<int>>& grid,
+                   const Pair& start, const Pair& end, int col, int row) {
+    stack<Pair> path;
+    vector<Pair>path_pair;
+    int g = 0;
+    int rows = end.first;
+    int cols = end.second;
+    Pair next_node = cell_details[rows][cols].parent;
+    ofstream fout("output.txt");
+
+    do {
+        path.push(next_node);
+        path_pair.push_back(next_node);
+        next_node = cell_details[rows][cols].parent;
+        rows = next_node.first;
+        cols = next_node.second;
+    } while (cell_details[rows][cols].parent != next_node);
+
+    path.emplace(rows, cols);
+    while (path.size() != 1) {
+        Pair p = path.top();
+        path.pop();
+        g += grid[p.first][p.second];
+    }
+    g += grid[end.first][end.second];
+    //cout << g;
+    fout << g;
+
+    fout.close();
+}

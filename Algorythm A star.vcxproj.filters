@@ -18,7 +18,7 @@
     <ClCompile Include="Algorythm A star.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="a_star.cpp">
+    <ClCompile Include="search algorithm.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="checks.cpp">
@@ -31,6 +31,9 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="path_making.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="test_system.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

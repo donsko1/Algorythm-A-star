@@ -20,13 +20,22 @@ struct cell {
     cell() : parent(-1, -1), f(-1), g(-1), h(-1) {}
 };
 
-void A_star(const vector<vector<int>>& grid, const Pair& current, const Pair& end, int col, int row, bool viz);
+void A_star(const vector<vector<int>>& grid, const Pair& current, const Pair& end, int col, int row);
+
+void A_star_n(const vector<vector<int>>& grid, const Pair& current, const Pair& end, int col, int row);
+
+void Dijkstra(const vector<vector<int>>& grid, const Pair& current, const Pair& end, int col, int row);
 
 bool is_valid(const vector<vector<int>>& grid, const Pair& point, int col, int row);
 
 int heuristic(const Pair& current, const Pair& end);
 
-void draw(const vector<vector<int>>& grid, vector<Pair>path, const Pair& end, int row, int col);
+void draw(const vector<vector<int>>& grid, const vector<vector<bool>>& path, const Pair& end, int row, int col);
 
 void path_making(vector<vector<cell>>& cell_details, const vector<vector<int>>& grid,
                 const Pair& start, const Pair& end, int col, int row);
+
+void path_making_n(vector<vector<cell>>& cell_details, const vector<vector<int>>& grid,
+    const Pair& start, const Pair& end, int col, int row);
+
+void test();

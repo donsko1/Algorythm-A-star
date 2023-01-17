@@ -1,6 +1,6 @@
 #include "a_star.h"
 
-void draw(const vector<vector<int>>& grid, vector<Pair>path, const Pair& end, int row, int col) {
+void draw(const vector<vector<int>>& grid, const vector<vector<bool>>& path, const Pair& end, int row, int col) {
     for (int i = 0; i < row; ++i) {
         for (int j = 0; j < col; ++j) {
 
@@ -10,11 +10,10 @@ void draw(const vector<vector<int>>& grid, vector<Pair>path, const Pair& end, in
                 HANDLE hwnd = GetStdHandle(STD_OUTPUT_HANDLE);
                 SetConsoleTextAttribute(hwnd, FOREGROUND_RED | FOREGROUND_INTENSITY);
             }
-            for (int q = 0; q < path.size(); ++q) {
-                if (i == path[q].first && j == path[q].second) {
-                    HANDLE hwnd = GetStdHandle(STD_OUTPUT_HANDLE);
-                    SetConsoleTextAttribute(hwnd, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-                }
+            
+            if (path[i][j]) {
+                HANDLE hwnd = GetStdHandle(STD_OUTPUT_HANDLE);
+                SetConsoleTextAttribute(hwnd, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
             }
 
             cout << setw(4) << grid[i][j] << " ";
@@ -24,4 +23,6 @@ void draw(const vector<vector<int>>& grid, vector<Pair>path, const Pair& end, in
         }
         cout << endl;
     }
+    Sleep(50);
+    system("cls");
 }
