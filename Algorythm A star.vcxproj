@@ -129,9 +129,7 @@
   <ItemGroup>
     <ClCompile Include="Algorythm A star.cpp" />
     <ClCompile Include="search algorithm.cpp" />
-    <ClCompile Include="checks.cpp" />
     <ClCompile Include="draw.cpp" />
-    <ClCompile Include="heuristic.cpp" />
     <ClCompile Include="path_making.cpp" />
     <ClCompile Include="test_system.cpp" />
   </ItemGroup>

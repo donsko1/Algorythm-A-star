@@ -21,12 +21,6 @@
     <ClCompile Include="search algorithm.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="checks.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="heuristic.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="draw.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>

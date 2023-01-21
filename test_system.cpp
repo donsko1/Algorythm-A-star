@@ -1,8 +1,8 @@
 #include "a_star.h"
 #include <time.h>
+#include <string>
 
 void manual_check(ifstream &finput, ifstream &fcorrect, int test_num) {
-    ifstream fanswer("output.txt");
     unsigned long int row, col, start_x, start_y, end_x, end_y, ga, gc;
     finput >> row >> col >> start_x >> start_y >> end_x >> end_y;
     fcorrect >> gc;
@@ -17,18 +17,15 @@ void manual_check(ifstream &finput, ifstream &fcorrect, int test_num) {
             finput >> grid[i][j];
         }
     }
-    A_star_n(grid, start, end, col, row);
-    fanswer >> ga;
+    ga = A_star(grid, start, end, false);
     if (ga == gc)
         cout << "test " << test_num << ": OK";
     else
         cout << "test " << test_num << ": WA";
     cout << endl;
-    fanswer.close();
 }
 
 void auto_check(ifstream& finput, int test_num) {
-    ifstream fanswer("output.txt");
     unsigned long int row, col, start_x, start_y, end_x, end_y, ga, gd;
     finput >> row >> col >> start_x >> start_y >> end_x >> end_y;
 
@@ -42,23 +39,16 @@ void auto_check(ifstream& finput, int test_num) {
             finput >> grid[i][j];
         }
     }
-    A_star_n(grid, start, end, col, row);
-    fanswer >> ga;
-    fanswer.close();
-    ifstream fdanswer("output.txt");
-    Dijkstra(grid, start, end, col, row);
-    fdanswer >> gd;
+    ga = A_star(grid, start, end, false);
+    gd = Dijkstra(grid, start, end);
     if (ga == gd)
         cout << "test " << test_num << ": OK";
     else
         cout << "test " << test_num << ": WA";
     cout << endl;
-    fanswer.close();
-    fdanswer.close();
 }
 
 void grid_make_check(int col, int row, int start_x, int start_y, int end_x, int end_y, int value, int test_num) {
-    ifstream fanswer("output.txt");
     vector< vector <int> > grid(row, vector<int>(col, value));
     Pair start(start_y, start_x);
     Pair end(end_y, end_x);
@@ -71,38 +61,32 @@ void grid_make_check(int col, int row, int start_x, int start_y, int end_x, int 
             }
         }
     }
-    A_star_n(grid, start, end, col, row);
-    fanswer >> ga;
-    fanswer.close();
-    ifstream fdanswer("output.txt");
-    Dijkstra(grid, start, end, col, row);
-    fdanswer >> gd;
+    ga = A_star(grid, start, end, false);
+    gd = Dijkstra(grid, start, end);
     if (ga == gd)
         cout << "test " << test_num << ": OK";
     else
         cout << "test " << test_num << ": WA";
     cout << endl;
-    fanswer.close();
-    fdanswer.close();
 }
+
 
 void test() {
     {
-        ifstream finput("tests\\1\\input.txt");
-        ifstream fcorrect("tests\\1\\result.txt");
-        manual_check(finput, fcorrect, 1);
-        finput.close();
-        fcorrect.close();
+        for (int i = 1; i <= 1; ++i) {
+            string file_name = "tests\\\\input.txt";
+            string file_answer = "tests\\\\result.txt";
+            file_name.insert(6, to_string(i));
+            file_answer.insert(6, to_string(i));
+            ifstream finput(file_name);
+            ifstream fcorrect(file_answer);
+            manual_check(finput, fcorrect, i);
+            finput.close();
+            fcorrect.close();
+        }
+        //return;
     }
-
-    {
-        ifstream finput("tests\\2\\input.txt");
-        ifstream fcorrect("tests\\2\\result.txt");
-        manual_check(finput, fcorrect, 2);
-        finput.close();
-        fcorrect.close();
-    }
-
+    
     {
         grid_make_check(10, 10, 0, 0, 9, 9, 0, 3);
     }

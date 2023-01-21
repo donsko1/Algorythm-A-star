@@ -23,7 +23,7 @@ int main() {
                 fin >> grid[i][j];
             }
         }
-        A_star(grid, start, end, col, row);
+        A_star(grid, start, end, true);
     }
     else
         test();
