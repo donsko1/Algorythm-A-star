@@ -1,6 +1,9 @@
 #include "a_star.h"
 
-void draw(const vector<vector<int>>& grid, const vector<vector<bool>>& path, const Pair& end, int row, int col) {
+void draw(const vector<vector<int>>& grid, const vector<vector<bool>>& path, const Pair& end) {
+    int row = grid.size();
+    int col = grid[0].size();
+
     for (int i = 0; i < row; ++i) {
         for (int j = 0; j < col; ++j) {
 

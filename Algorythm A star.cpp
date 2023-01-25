@@ -16,9 +16,8 @@ int main() {
         Pair start(start_y, start_x);
         Pair end(end_y, end_x);
 
-        vector< vector <int> > grid(row);
+        vector< vector <int> > grid(row, vector<int>(col));
         for (int i = 0; i < row; ++i) {
-            grid[i].resize(col);
             for (int j = 0; j < col; ++j) {
                 fin >> grid[i][j];
             }

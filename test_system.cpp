@@ -3,7 +3,7 @@
 #include <string>
 
 void manual_check(ifstream &finput, ifstream &fcorrect, int test_num) {
-    unsigned long int row, col, start_x, start_y, end_x, end_y, ga, gc;
+    unsigned long long int row, col, start_x, start_y, end_x, end_y, ga, gc;
     finput >> row >> col >> start_x >> start_y >> end_x >> end_y;
     fcorrect >> gc;
 
@@ -26,15 +26,14 @@ void manual_check(ifstream &finput, ifstream &fcorrect, int test_num) {
 }
 
 void auto_check(ifstream& finput, int test_num) {
-    unsigned long int row, col, start_x, start_y, end_x, end_y, ga, gd;
+    unsigned long long int row, col, start_x, start_y, end_x, end_y, ga, gd;
     finput >> row >> col >> start_x >> start_y >> end_x >> end_y;
 
     Pair start(start_y, start_x);
     Pair end(end_y, end_x);
 
-    vector< vector <int> > grid(row);
+    vector< vector <int> > grid(row, vector<int>(col));
     for (int i = 0; i < row; ++i) {
-        grid[i].resize(col);
         for (int j = 0; j < col; ++j) {
             finput >> grid[i][j];
         }
@@ -52,7 +51,7 @@ void grid_make_check(int col, int row, int start_x, int start_y, int end_x, int 
     vector< vector <int> > grid(row, vector<int>(col, value));
     Pair start(start_y, start_x);
     Pair end(end_y, end_x);
-    unsigned long int ga, gd;
+    unsigned long long int ga, gd;
     if (value == 0) {
         srand(time(NULL));
         for (int i = 0; i < row; ++i) {
@@ -84,7 +83,6 @@ void test() {
             finput.close();
             fcorrect.close();
         }
-        //return;
     }
     
     {

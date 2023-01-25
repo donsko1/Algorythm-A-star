@@ -1,13 +1,13 @@
 #include "a_star.h"
 
-int path_making(vector<vector<cell>>& cell_details, const vector<vector<int>>& grid, 
+unsigned long long int path_making(vector<vector<cell>>& cell_details, const vector<vector<int>>& grid, 
                 const Pair& start, const Pair& end, bool visualization) {
     int row = grid.size();
     int col = grid[0].size();
 
     stack<Pair> path;
     vector<Pair>path_pair;
-    int g = 0;
+    unsigned long long int g = 0;
     int rows = end.first;
     int cols = end.second;
     Pair next_node = cell_details[rows][cols].parent;
@@ -21,7 +21,6 @@ int path_making(vector<vector<cell>>& cell_details, const vector<vector<int>>& g
     } while (cell_details[rows][cols].parent != next_node);
 
     if (visualization) {
-        ofstream fout("output.txt");
         for (int i = 0; i < row; ++i) {
             for (int j = 0; j < col; ++j) {
 
@@ -63,9 +62,6 @@ int path_making(vector<vector<cell>>& cell_details, const vector<vector<int>>& g
         }
         g += grid[end.first][end.second];
         cout << endl << "(" << end.first << ";" << end.second << ")" << endl << "The cost of the path is " << g;
-        fout << g;
-
-        fout.close();
     }
     else {
         path.emplace(rows, cols);
@@ -75,10 +71,6 @@ int path_making(vector<vector<cell>>& cell_details, const vector<vector<int>>& g
             g += grid[p.first][p.second];
         }
         g += grid[end.first][end.second];
-        //cout << g;
-        //fout << g;
-
-        //fout.close();
         return g;
     }
 }

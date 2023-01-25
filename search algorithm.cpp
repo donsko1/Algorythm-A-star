@@ -10,7 +10,7 @@ bool is_valid(const vector<vector<int>>& grid, const Pair& point, int col, int r
     return (point.first >= 0) && (point.first < row) && (point.second >= 0) && (point.second < col);
 }
 
-int A_star(const vector<vector<int>>& grid, const Pair& current, const Pair& end, bool visualization){
+unsigned long long int A_star(const vector<vector<int>>& grid, const Pair& current, const Pair& end, bool visualization){
     int row = grid.size();
     int col = grid[0].size();
     long long int g_o = 0;
@@ -38,7 +38,7 @@ int A_star(const vector<vector<int>>& grid, const Pair& current, const Pair& end
         closed_list[i][j] = true;
 
         if(visualization)
-            draw(grid, closed_list, end, row, col);
+            draw(grid, closed_list, end);
 
         for (int x = -1; x <= 1; ++x) {
             for (int y = -1; y <= 1; ++y) {
@@ -75,7 +75,7 @@ int A_star(const vector<vector<int>>& grid, const Pair& current, const Pair& end
     }
 }
 
-int Dijkstra(const vector<vector<int>>& grid, const Pair& current, const Pair& end) {
+unsigned long long int Dijkstra(const vector<vector<int>>& grid, const Pair& current, const Pair& end) {
     int row = grid.size();
     int col = grid[0].size();
     long long int g_o = 0;
