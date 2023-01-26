@@ -19,32 +19,15 @@ struct cell {
     double f, g, h;
     cell() : parent(-1, -1), f(-1), g(-1), h(-1) {}
 };
-/*
-struct Pair {
-int first;
-int second;
-Pair(int _x, int _y) {
-this->first = _x;
-this->second = _y;
-}
-Pair() {
-first = 0;
-second = 0;
-}
 
-bool operator == (Pair& a, const Pair& b) {
-return a == b;
-}
-};
-*/
+vector<Pair> A_star(const vector<vector<int>>& grid, const Pair& current, const Pair& end, bool visualization);
 
-unsigned long long int A_star(const vector<vector<int>>& grid, const Pair& current, const Pair& end, bool visualization);
-
-unsigned long long int Dijkstra(const vector<vector<int>>& grid, const Pair& current, const Pair& end);
+vector<Pair> Dijkstra(const vector<vector<int>>& grid, const Pair& current, const Pair& end);
 
 void draw(const vector<vector<int>>& grid, const vector<vector<bool>>& path, const Pair& end);
 
-unsigned long long int path_making(vector<vector<cell>>& cell_details, const vector<vector<int>>& grid,
-                const Pair& start, const Pair& end, bool visualization);
+vector<Pair> path_making(vector<vector<cell>>& cell_details, const Pair& start, const Pair& end);
+
+void visualization(vector<Pair>path, const vector<vector<int>>& grid, const Pair& start, const Pair& end);
 
 void test();

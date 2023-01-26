@@ -9,7 +9,6 @@ int main() {
 
     if (viz) {
         ifstream fin("input.txt");
-        ofstream fout("output.txt");
         unsigned long int row, col, start_x, start_y, end_x, end_y;
         fin >> row >> col >> start_x >> start_y >> end_x >> end_y;
 
@@ -22,7 +21,8 @@ int main() {
                 fin >> grid[i][j];
             }
         }
-        A_star(grid, start, end, true);
+        visualization(A_star(grid, start, end, true), grid, start, end);
+        fin.close();
     }
     else
         test();

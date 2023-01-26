@@ -10,15 +10,13 @@ bool is_valid(const vector<vector<int>>& grid, const Pair& point, int col, int r
     return (point.first >= 0) && (point.first < row) && (point.second >= 0) && (point.second < col);
 }
 
-unsigned long long int A_star(const vector<vector<int>>& grid, const Pair& current, const Pair& end, bool visualization){
+vector<Pair> A_star(const vector<vector<int>>& grid, const Pair& current, const Pair& end, bool visualization){
     int row = grid.size();
     int col = grid[0].size();
-    long long int g_o = 0;
 
     vector< vector <bool> > closed_list(row, vector<bool>(col, false));
     vector< vector <cell> > cell_details(row, vector<cell>(col));
 
-    Pair path_pair;
     Pair start = current;
 
     int i = current.first, j = current.second;
@@ -48,8 +46,7 @@ unsigned long long int A_star(const vector<vector<int>>& grid, const Pair& curre
                 if (is_valid(grid, n, col, row)) {
                     if (n == end) {
                         cell_details[n.first][n.second].parent = { i, j };
-                        g_o = path_making(cell_details, grid, start, end, visualization);
-                        return g_o;
+                        return path_making(cell_details, start, end);
                     }
                     else if (!closed_list[n.first][n.second] || 
                                 cell_details[i][j].g + grid[n.first][n.second] < 
@@ -61,7 +58,6 @@ unsigned long long int A_star(const vector<vector<int>>& grid, const Pair& curre
 
                         if (cell_details[n.first][n.second].f == -1 || 
                                 cell_details[n.first][n.second].f > f_new) {
-                            path_pair = { i, j };
                             open_list.emplace(f_new, n.first, n.second);
                             cell_details[n.first][n.second].g = g_new;
                             cell_details[n.first][n.second].h = h_new;
@@ -75,15 +71,13 @@ unsigned long long int A_star(const vector<vector<int>>& grid, const Pair& curre
     }
 }
 
-unsigned long long int Dijkstra(const vector<vector<int>>& grid, const Pair& current, const Pair& end) {
+vector<Pair> Dijkstra(const vector<vector<int>>& grid, const Pair& current, const Pair& end) {
     int row = grid.size();
     int col = grid[0].size();
-    long long int g_o = 0;
 
     vector< vector <bool> > closed_list(row, vector<bool>(col, false));
     vector< vector <cell> > cell_details(row, vector<cell>(col));
 
-    Pair path_pair;
     Pair start = current;
 
     int i = current.first, j = current.second;
@@ -109,8 +103,7 @@ unsigned long long int Dijkstra(const vector<vector<int>>& grid, const Pair& cur
                 if (is_valid(grid, n, col, row)) {
                     if (n == end) {
                         cell_details[n.first][n.second].parent = { i, j };
-                        g_o = path_making(cell_details, grid, start, end, false);
-                        return g_o;
+                        return path_making(cell_details, start, end);
                     }
                     else if (!closed_list[n.first][n.second] ||
                         cell_details[i][j].g + grid[n.first][n.second] <
@@ -120,8 +113,7 @@ unsigned long long int Dijkstra(const vector<vector<int>>& grid, const Pair& cur
                         f_new = g_new;
 
                         if (cell_details[n.first][n.second].f == -1 ||
-                            cell_details[n.first][n.second].f > f_new) {
-                            path_pair = { i, j };
+                                cell_details[n.first][n.second].f > f_new) {
                             open_list.emplace(f_new, n.first, n.second);
                             cell_details[n.first][n.second].g = g_new;
                             cell_details[n.first][n.second].f = f_new;
